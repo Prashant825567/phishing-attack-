@@ -2,20 +2,29 @@
 
 <html>
 <head>
-  <title>🔥 Admin Panel - Zoya</title>
+  <title>🔥 Zoya Admin Panel</title>
+
+  <!-- Google Font -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
+      color: #eee;
     }
 
+    /* 🔥 Gradient Heading */
     h2 {
       text-align: center;
       margin-top: 20px;
-      font-weight: 600;
+      font-size: 28px;
+      background: linear-gradient(45deg, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
       letter-spacing: 1px;
     }
 
@@ -26,27 +35,34 @@
       background: rgba(255, 255, 255, 0.05);
       border-radius: 15px;
       padding: 20px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      overflow: hidden;
       border-radius: 10px;
+      overflow: hidden;
     }
 
+    /* 🔤 Stylish Header */
     th {
-      background: rgba(0,0,0,0.5);
       padding: 12px;
-      text-transform: uppercase;
+      background: rgba(0,0,0,0.6);
       font-size: 14px;
+      text-transform: uppercase;
       letter-spacing: 1px;
+      color: #00f2fe;
+      text-shadow: 0 0 5px #00f2fe;
     }
 
+    /* ✨ Stylish Text */
     td {
       padding: 12px;
       text-align: center;
+      color: #ffffff;
+      font-weight: 300;
+      text-shadow: 0 0 3px rgba(255,255,255,0.4);
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
@@ -55,13 +71,15 @@
       transition: 0.3s;
     }
 
+    /* 🔴 Button */
     .btn-delete {
       background: linear-gradient(45deg, #ff416c, #ff4b2b);
       border: none;
-      padding: 6px 12px;
+      padding: 6px 14px;
       color: white;
       border-radius: 20px;
       cursor: pointer;
+      font-weight: 500;
       transition: 0.3s;
     }
 
@@ -70,32 +88,44 @@
       box-shadow: 0 0 10px #ff4b2b;
     }
 
+    /* 🟡 Status Badge */
     .status {
-      padding: 4px 10px;
-      border-radius: 10px;
+      padding: 5px 12px;
+      border-radius: 15px;
       font-size: 12px;
+      font-weight: 500;
+      text-shadow: none;
     }
 
     .pending {
-      background: orange;
+      background: linear-gradient(45deg, orange, gold);
+      color: black;
     }
 
     .verified {
-      background: limegreen;
+      background: linear-gradient(45deg, #00ff87, #60efff);
+      color: black;
     }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
+    /* 🔍 Search Box */
     input {
       padding: 8px;
       border-radius: 8px;
       border: none;
       outline: none;
-      width: 200px;
+      width: 220px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
     }
 
   </style>
@@ -151,7 +181,6 @@ async function loadUsers() {
 
   snapshot.forEach((docSnap) => {
     const data = docSnap.data();
-
     const statusClass = data.status === "pending" ? "pending" : "verified";
 
     const row = document.createElement("tr");
